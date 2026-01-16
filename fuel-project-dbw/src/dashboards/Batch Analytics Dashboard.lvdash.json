@@ -443,9 +443,26 @@
             "name": "27d385e6",
             "queries": [
               {
-                "name": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bb271e1517b6fd7ae14f998cb0_full_date",
+                "name": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bce0391fa3b360b79ad3dff963_full_date",
                 "query": {
-                  "datasetName": "675a82c8",
+                  "datasetName": "f07dfd9e",
+                  "fields": [
+                    {
+                      "name": "full_date",
+                      "expression": "`full_date`"
+                    },
+                    {
+                      "name": "full_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              },
+              {
+                "name": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2be7f5a10d08db13efbdff8e57b_full_date",
+                "query": {
+                  "datasetName": "91afb056",
                   "fields": [
                     {
                       "name": "full_date",
@@ -467,7 +484,11 @@
                 "fields": [
                   {
                     "fieldName": "full_date",
-                    "queryName": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bb271e1517b6fd7ae14f998cb0_full_date"
+                    "queryName": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bce0391fa3b360b79ad3dff963_full_date"
+                  },
+                  {
+                    "fieldName": "full_date",
+                    "queryName": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2be7f5a10d08db13efbdff8e57b_full_date"
                   }
                 ]
               },
