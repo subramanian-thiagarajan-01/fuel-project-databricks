@@ -1,0 +1,652 @@
+{
+  "datasets": [
+    {
+      "name": "675a82c8",
+      "displayName": "dim_date",
+      "queryLines": [
+        "SELECT * FROM fuel_project_dev.gold.dim_date"
+      ]
+    },
+    {
+      "name": "c3bc4505",
+      "displayName": "Recent Station Performance Insights",
+      "queryLines": [
+        "SELECT \r\n",
+        "     SUM(total_revenue) as total_revenue,\r\n",
+        "     SUM(total_transactions) as total_transactions,\r\n",
+        "     AVG(avg_rating) as avg_customer_rating,\r\n",
+        "     SUM(negative_reviews) as total_negative_reviews,\r\n",
+        "     ROUND(SUM(total_revenue) / SUM(total_transactions), 2) as avg_transaction_value\r\n",
+        "   FROM fuel_project_dev.gold.vw_batch_station_performance\r\n",
+        "   WHERE full_date >= current_date() - interval 30 day;"
+      ]
+    },
+    {
+      "name": "f07dfd9e",
+      "displayName": "Daily Revenue and Ratings Overview",
+      "queryLines": [
+        "SELECT \r\n",
+        "     full_date,\r\n",
+        "     SUM(total_revenue) as daily_revenue,\r\n",
+        "     AVG(avg_rating) as avg_rating\r\n",
+        "   FROM fuel_project_dev.gold.vw_batch_station_performance\r\n",
+        "   GROUP BY full_date\r\n",
+        "   ORDER BY full_date;"
+      ]
+    },
+    {
+      "name": "6f7012ab",
+      "displayName": "Station Performance Insights Summary",
+      "queryLines": [
+        "SELECT \r\n",
+        "     station_size_category,\r\n",
+        "     SUM(total_revenue) as total_revenue,\r\n",
+        "     AVG(revenue_per_employee) as avg_revenue_per_employee,\r\n",
+        "     COUNT(DISTINCT fuel_station_id) as station_count\r\n",
+        "   FROM fuel_project_dev.gold.vw_batch_station_performance\r\n",
+        "   GROUP BY station_size_category;"
+      ]
+    },
+    {
+      "name": "91afb056",
+      "displayName": "Fuel Revenue Summary by Date Analysis",
+      "queryLines": [
+        "SELECT \r\n",
+        "     full_date,\r\n",
+        "     SUM(petrol_revenue) as Petrol,\r\n",
+        "     SUM(diesel_revenue) as Diesel,\r\n",
+        "     SUM(cng_revenue) as CNG\r\n",
+        "   FROM fuel_project_dev.gold.vw_batch_station_performance\r\n",
+        "   GROUP BY full_date\r\n",
+        "   ORDER BY full_date;"
+      ]
+    },
+    {
+      "name": "7ccf338f",
+      "displayName": "Fuel Station Ratings and Negative Feedback Summary",
+      "queryLines": [
+        "SELECT \r\n",
+        "     fuel_station_id,\r\n",
+        "     AVG(avg_rating) as avg_rating,\r\n",
+        "     SUM(negative_reviews) as negative_count\r\n",
+        "   FROM fuel_project_dev.gold.vw_batch_station_performance\r\n",
+        "   GROUP BY fuel_station_id\r\n",
+        "   ORDER BY avg_rating ASC;"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "65448f8f",
+      "displayName": "Strategic Analytics",
+      "layout": [
+        {
+          "widget": {
+            "name": "average-customer-rating",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c3bc4505",
+                  "fields": [
+                    {
+                      "name": "sum(avg_customer_rating)",
+                      "expression": "SUM(`avg_customer_rating`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(avg_customer_rating)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Customer Rating"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "10a47b04",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c3bc4505",
+                  "fields": [
+                    {
+                      "name": "sum(avg_transaction_value)",
+                      "expression": "SUM(`avg_transaction_value`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(avg_transaction_value)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    },
+                    "hideGroupSeparator": false
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Transaction Value"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "f595699c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c3bc4505",
+                  "fields": [
+                    {
+                      "name": "total_negative_reviews",
+                      "expression": "`total_negative_reviews`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_negative_reviews"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Negative Reviews"
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "4af18fe6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c3bc4505",
+                  "fields": [
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_revenue)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Revenue"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "88b87a49",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "c3bc4505",
+                  "fields": [
+                    {
+                      "name": "sum(total_transactions)",
+                      "expression": "SUM(`total_transactions`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_transactions)"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Transactions"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue-trend",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "f07dfd9e",
+                  "fields": [
+                    {
+                      "name": "daily(full_date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `full_date`)"
+                    },
+                    {
+                      "name": "daily_revenue",
+                      "expression": "`daily_revenue`"
+                    },
+                    {
+                      "name": "avg_rating",
+                      "expression": "`avg_rating`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "widgetType": "combo",
+              "encodings": {
+                "x": {
+                  "fieldName": "daily(full_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "label": {
+                  "show": true
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "daily_revenue"
+                      }
+                    ]
+                  },
+                  "secondary": {
+                    "fields": [
+                      {
+                        "fieldName": "avg_rating"
+                      }
+                    ]
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue Trend"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "station-size-performance",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6f7012ab",
+                  "fields": [
+                    {
+                      "name": "station_size_category",
+                      "expression": "`station_size_category`"
+                    },
+                    {
+                      "name": "sum(total_revenue)",
+                      "expression": "SUM(`total_revenue`)"
+                    },
+                    {
+                      "name": "sum(avg_revenue_per_employee)",
+                      "expression": "SUM(`avg_revenue_per_employee`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "station_size_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "primary": {
+                    "fields": [
+                      {
+                        "fieldName": "sum(total_revenue)"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    }
+                  },
+                  "secondary": {
+                    "fields": [
+                      {
+                        "fieldName": "sum(avg_revenue_per_employee)"
+                      }
+                    ],
+                    "scale": {
+                      "type": "quantitative"
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Station Size Performance"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 2,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "cba9f9cb",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "27d385e6",
+            "queries": [
+              {
+                "name": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bb271e1517b6fd7ae14f998cb0_full_date",
+                "query": {
+                  "datasetName": "675a82c8",
+                  "fields": [
+                    {
+                      "name": "full_date",
+                      "expression": "`full_date`"
+                    },
+                    {
+                      "name": "full_date_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-date-range-picker",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "full_date",
+                    "queryName": "dashboards/01f0f2badb6b1c1a8ade1f638f515091/datasets/01f0f2bb271e1517b6fd7ae14f998cb0_full_date"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              },
+              "selection": {
+                "defaultSelection": {
+                  "range": {
+                    "dataType": "DATE",
+                    "min": {
+                      "value": "now-30d/d"
+                    },
+                    "max": {
+                      "value": "now/d"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    },
+    {
+      "name": "24f7cf7f",
+      "displayName": "Customer and Fuel Analysis",
+      "layout": [
+        {
+          "widget": {
+            "name": "fuel-revenue-mix",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "91afb056",
+                  "fields": [
+                    {
+                      "name": "monthly(full_date)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `full_date`)"
+                    },
+                    {
+                      "name": "sum(CNG)",
+                      "expression": "SUM(`CNG`)"
+                    },
+                    {
+                      "name": "sum(Diesel)",
+                      "expression": "SUM(`Diesel`)"
+                    },
+                    {
+                      "name": "sum(Petrol)",
+                      "expression": "SUM(`Petrol`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(full_date)",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(CNG)"
+                    },
+                    {
+                      "fieldName": "sum(Diesel)"
+                    },
+                    {
+                      "fieldName": "sum(Petrol)"
+                    }
+                  ]
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Fuel Revenue Mix"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "customer-satisfaction",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "7ccf338f",
+                  "fields": [
+                    {
+                      "name": "sum(avg_rating)",
+                      "expression": "SUM(`avg_rating`)"
+                    },
+                    {
+                      "name": "fuel_station_id",
+                      "expression": "`fuel_station_id`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "fuel_station_id",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(avg_rating)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(avg_rating)",
+                  "scale": {
+                    "type": "quantitative",
+                    "reverse": false,
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "redyellowgreen"
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Customer Satisfaction"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 0,
+            "width": 3,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
