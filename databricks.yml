@@ -20,4 +20,4 @@ targets:
       host: https://adb-7405614629048942.2.azuredatabricks.net
       root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
     run_as:
-      service_principal_name: sp-databricks
+      service_principal_name: b426a65a-1aad-4733-96d6-4e8d88919b02
