@@ -1,27 +1,23 @@
-# Databricks Asset Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
 bundle:
-  name: "fuel-project-dbw"
+  name: fuel-project-databricks
 
+# Define the location of your resources
 include:
   - resources/*.yml
-  - resources/*/*.yml
 
 targets:
-  # The 'dev' target, for development purposes. This target is the default.
+  # Development Environment
   dev:
     mode: development
     default: true
     workspace:
       host: https://adb-7405614629048942.2.azuredatabricks.net
 
-  # The 'prod' target, used for production deployment.
+  # Production Environment
   prod:
     mode: production
     workspace:
       host: https://adb-7405614629048942.2.azuredatabricks.net
-      # We always use /Users/subbuthiagumsi@outlook.com for all resources to make sure we only have a single copy.
-      root_path: /Users/subbuthiagumsi@outlook.com/.bundle/${bundle.name}/${bundle.target}
+      rootpath: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
     run_as:
-      # This runs as subbuthiagumsi@outlook.com in production. We could also use a service principal here,
-      # see https://docs.databricks.com/dev-tools/bundles/permissions.html.
-      user_name: subbuthiagumsi@outlook.com
+      service_principal_name: sp-databricks
