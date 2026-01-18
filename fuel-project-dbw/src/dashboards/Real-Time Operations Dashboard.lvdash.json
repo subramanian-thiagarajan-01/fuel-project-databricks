@@ -429,8 +429,8 @@
                   "datasetName": "69f530a1",
                   "fields": [
                     {
-                      "name": "monthly(hour)",
-                      "expression": "DATE_TRUNC(\"MONTH\", `hour`)"
+                      "name": "hourly(hour)",
+                      "expression": "DATE_TRUNC(\"HOUR\", `hour`)"
                     },
                     {
                       "name": "sum(revenue)",
@@ -450,7 +450,7 @@
               "widgetType": "line",
               "encodings": {
                 "x": {
-                  "fieldName": "monthly(hour)",
+                  "fieldName": "hourly(hour)",
                   "scale": {
                     "type": "temporal"
                   }

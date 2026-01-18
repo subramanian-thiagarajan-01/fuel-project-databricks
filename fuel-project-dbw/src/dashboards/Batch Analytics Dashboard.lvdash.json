@@ -534,8 +534,8 @@
                   "datasetName": "91afb056",
                   "fields": [
                     {
-                      "name": "monthly(full_date)",
-                      "expression": "DATE_TRUNC(\"MONTH\", `full_date`)"
+                      "name": "daily(full_date)",
+                      "expression": "DATE_TRUNC(\"DAY\", `full_date`)"
                     },
                     {
                       "name": "sum(CNG)",
@@ -559,7 +559,7 @@
               "widgetType": "area",
               "encodings": {
                 "x": {
-                  "fieldName": "monthly(full_date)",
+                  "fieldName": "daily(full_date)",
                   "scale": {
                     "type": "temporal"
                   }

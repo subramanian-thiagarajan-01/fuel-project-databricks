@@ -1,0 +1,2 @@
+REFRESH MATERIALIZED VIEW fuel_project_dev.gold.mv_station_daily_performance;
+REFRESH MATERIALIZED VIEW fuel_project_dev.gold.mv_station_review_metrics;
