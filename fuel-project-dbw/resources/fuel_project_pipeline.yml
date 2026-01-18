@@ -1,0 +1,65 @@
+resources:
+  jobs:
+    fuel_project_pipeline:
+      name: fuel_project_pipeline
+      email_notifications:
+        on_success:
+          - subbuthiaguMSI@outlook.com
+        on_failure:
+          - subbuthiaguMSI@outlook.com
+        no_alert_for_skipped_runs: true
+      notification_settings:
+        no_alert_for_skipped_runs: true
+        no_alert_for_canceled_runs: true
+      trigger:
+        pause_status: UNPAUSED
+        periodic:
+          interval: 1
+          unit: HOURS
+      tasks:
+        - task_key: bronze_fuel_rates
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/bronze/raw_bronze_fuel_rate
+            source: WORKSPACE
+        - task_key: bronze_fuel_station
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/bronze/raw_bronze_fuel_station
+            source: WORKSPACE
+        - task_key: silver_fuel_rates
+          depends_on:
+            - task_key: bronze_fuel_rates
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/silver/bronze_silver_fuel_rates
+            source: WORKSPACE
+        - task_key: gold_fact_transactions
+          depends_on:
+            - task_key: silver_fuel_rates
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/gold/fact_fuel_transactions
+            source: WORKSPACE
+          environment_key: gold_fact_transactions_environment
+        - task_key: silver_fuel_station
+          depends_on:
+            - task_key: bronze_fuel_station
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/silver/bronze_silver_fuel_station
+            source: WORKSPACE
+        - task_key: gold_dim_fuel_station
+          depends_on:
+            - task_key: silver_fuel_station
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/gold/dim_fuel_station
+            source: WORKSPACE
+        - task_key: Refresh_Materialized_Views
+          depends_on:
+            - task_key: gold_fact_transactions
+            - task_key: gold_dim_fuel_station
+          run_job_task:
+            job_id: 121279949956928
+      queue:
+        enabled: true
+      environments:
+        - environment_key: gold_fact_transactions_environment
+          spec:
+            environment_version: "4"
+      performance_target: PERFORMANCE_OPTIMIZED

@@ -1,0 +1,17 @@
+resources:
+  jobs:
+    fuel_project_streaming_fuel_transactions_ingestion:
+      name: fuel_project_streaming_fuel_transactions_ingestion
+      tasks:
+        - task_key: stream_fuel_transactions_bronze
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/bronze/raw_bronze_fuel_transactions
+            source: WORKSPACE
+          existing_cluster_id: 0115-112856-6c23vxts
+        - task_key: stream_fuel_transactions_silver
+          notebook_task:
+            notebook_path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/silver/bronze_silver_fuel_transactions
+            source: WORKSPACE
+          existing_cluster_id: 0115-112856-6c23vxts
+      queue:
+        enabled: true
