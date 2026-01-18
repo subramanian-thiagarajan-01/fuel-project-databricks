@@ -1,0 +1,23 @@
+bundle:
+  name: fuel-project-databricks
+
+# Define the location of your resources
+include:
+  - resources/*.yml
+
+targets:
+  # Development Environment
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: https://adb-7405614629048942.2.azuredatabricks.net
+
+  # Production Environment
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-7405614629048942.2.azuredatabricks.net
+      rootpath: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      service_principal_name: sp-databricks

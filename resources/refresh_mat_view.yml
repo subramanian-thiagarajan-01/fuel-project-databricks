@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    refresh_mat_view:
+      name: refresh_mat_view
+      tasks:
+        - task_key: Refresh_Mat_View
+          sql_task:
+            file:
+              path: /Workspace/Users/subbuthiagumsi@outlook.com/fuel-project-databricks/fuel-project-dbw/src/notebooks/refreshMatViews.sql
+              source: WORKSPACE
+            warehouse_id: b83c0b1ba76c05a2
+      queue:
+        enabled: true
